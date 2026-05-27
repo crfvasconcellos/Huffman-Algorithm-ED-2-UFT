@@ -118,29 +118,6 @@ gcc main.c MinHeap.c -o output/huffman
 
 ---
 
-## 📊 Resultados de Compactação
-
-| Tipo de Arquivo | Tamanho Original | Tamanho Compactado | Taxa de Compressão |
-|---|---|---|---|
-| Texto pequeno com alta repetição (16 chars) | 17 bytes | 29 bytes | -70,59% (esperado*) |
-| Texto grande (~276 KB) | 276.000 bytes | 153.585 bytes | **44,35%** |
-| Arquivo binário (.exe, ~50 KB) | 50.269 bytes | 36.895 bytes | **26,60%** |
-
-> \* Arquivos muito pequenos ficam maiores após a compressão porque o cabeçalho do `.huff` ocupa mais espaço do que a economia obtida na codificação. Isso é comportamento normal e esperado do algoritmo.
-
-**Em todos os 3 testes, o arquivo restaurado foi verificado como idêntico ao original (sem perda de dados).**
-
----
-
-## 🧪 Testes Realizados
-
-- ✅ Arquivo de texto pequeno com alta repetição (`AAAAAAABBBBBCCCC`)
-- ✅ Arquivo de texto grande (~276 KB, trecho de Dom Casmurro repetido)
-- ✅ Arquivo binário (executável `.exe`)
-- ✅ Verificação de integridade com `fc /b` (comparação byte a byte)
-
----
-
 ## 📌 Status do Projeto
 
 ✅ **Concluído** — Compressor e Descompressor funcionando corretamente.
