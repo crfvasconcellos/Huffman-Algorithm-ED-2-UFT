@@ -1,7 +1,6 @@
 # 🗜️ Huffman Compressor & Decompressor
 
-Projeto desenvolvido para a disciplina de **Estrutura de Dados II** da  
-:contentReference[oaicite:0]{index=0}.
+Projeto desenvolvido para a disciplina de **Estrutura de Dados II** da **Universidade Federal do Tocantins (UFT)**.
 
 ## 👨‍💻 Integrantes
 
@@ -11,137 +10,150 @@ Projeto desenvolvido para a disciplina de **Estrutura de Dados II** da
 
 ---
 
-# 📚 Sobre o Projeto
+## 📚 Sobre o Projeto
 
-Este projeto consiste na implementação do **Algoritmo de Huffman** utilizando a linguagem **C**, com o objetivo de realizar:
+Implementação completa do **Algoritmo de Huffman** em linguagem **C**, capaz de:
 
-- Compressão de arquivos;
-- Descompressão de arquivos;
-- Manipulação de bits;
-- Construção de árvores binárias;
-- Uso de filas de prioridade (Min-Heap);
-- Aplicação prática de estruturas de dados não-lineares.
-
-O sistema será executado via terminal utilizando argumentos de linha de comando.
+- **Compactar** qualquer arquivo (texto, binário, imagem, etc.) gerando um arquivo `.huff`
+- **Descompactar** o arquivo `.huff` restaurando o arquivo original **sem perda de nenhum byte**
 
 ---
 
-# 🎯 Objetivo
+## 🧠 Estruturas de Dados Utilizadas
 
-O trabalho tem como finalidade aplicar conceitos estudados em Estrutura de Dados II através da construção de um compactador de arquivos baseado no algoritmo de Huffman.
-
-O programa deverá ser capaz de:
-
-- Ler um arquivo original;
-- Gerar uma versão compactada no formato `.huff`;
-- Reconstruir perfeitamente o arquivo original a partir do arquivo compactado.
+| Estrutura | Onde é usada | Arquivo |
+|---|---|---|
+| **Árvore Binária** | Árvore de Huffman (codificação/decodificação) | `MinHeap.c` |
+| **Fila de Prioridade (Min-Heap)** | Lista encadeada ordenada por frequência | `MinHeap.c` |
+| **Tabela Hash** | Array `codigos[256]` com hash `h(k) = k` para mapear byte → código | `main.c` |
 
 ---
 
-# ⚙️ Funcionalidades Planejadas
+## 📁 Estrutura do Projeto
 
-## Compressão
-
-- Leitura do arquivo byte a byte;
-- Cálculo da frequência de ocorrência dos bytes;
-- Construção da árvore de Huffman;
-- Geração dos códigos binários;
-- Criação do arquivo compactado `.huff`.
-
-## Descompressão
-
-- Leitura do cabeçalho do arquivo `.huff`;
-- Reconstrução da árvore de Huffman;
-- Decodificação dos bits;
-- Restauração do arquivo original.
-
----
-
-# 🧠 Estruturas de Dados Utilizadas
-
-O projeto envolve o uso das seguintes estruturas:
-
-- Árvores Binárias;
-- Filas de Prioridade (Min-Heap);
-- Tabelas Hash;
-- Manipulação de Bits;
-- Arquivos Binários.
-
----
-
-# 📁 Estrutura do Arquivo `.huff`
-
-O arquivo compactado seguirá o seguinte formato:
-
-| Campo | Descrição |
-|---|---|
-| Contagem | Quantidade de bytes únicos |
-| Tabela | Frequência dos bytes |
-| Bits Lixo | Bits extras do último byte |
-| Payload | Dados compactados |
-
----
-
-# 💻 Compilação
-
-Exemplo de compilação utilizando GCC:
-
-```bash
-gcc *.c -o huffman
+```
+NosTres-ED2-UFT/
+├── main.c          # Programa principal (CLI + compressor + descompressor)
+├── MinHeap.c       # Implementação das estruturas de dados
+├── MinHeap.h       # Definição das structs e protótipos
+├── data/
+│   └── entrada.txt # Arquivo de teste
+├── output/
+│   └── huffman.exe # Executável compilado
+└── README.md
 ```
 
 ---
 
-# 🚀 Execução
+## 📁 Formato do Arquivo `.huff`
 
-## Compactar um arquivo
+| Campo | Tamanho | Descrição |
+|---|---|---|
+| Contagem | 4 bytes (int) | Quantidade de bytes únicos na tabela |
+| Tabela | N × 5 bytes | Pares `[Byte (1 byte) + Frequência (4 bytes)]` |
+| Bits Lixo | 1 byte | Bits não usados no último byte (0 a 7) |
+| Payload | Variável | Dados codificados em bits |
+
+---
+
+## 💻 Como Compilar
+
+É necessário ter o **GCC** instalado. No terminal:
 
 ```bash
-./huffman -c arquivo.txt compactado.huff
+gcc main.c MinHeap.c -o huffman
 ```
 
-## Descompactar um arquivo
+Ou, para compilar diretamente na pasta `output/`:
 
 ```bash
-./huffman -d compactado.huff arquivo_restaurado.txt
+gcc main.c MinHeap.c -o output/huffman
 ```
 
 ---
 
-# 🧪 Testes
+## 🚀 Como Executar
 
-Os testes do projeto incluirão:
+### Compactar um arquivo
 
-- Arquivos de texto grandes;
-- Arquivos pequenos com alta repetição;
-- Arquivos binários já compactados.
+```bash
+./huffman -c <arquivo_entrada> <arquivo_saida.huff>
+```
 
----
+**Exemplo:**
 
-# 📊 Resultados
+```bash
+./huffman -c documento.txt documento.huff
+```
 
-> Esta seção será atualizada futuramente com:
->
-> - Taxa de compressão;
-> - Comparação entre tamanhos;
-> - Tempo de execução;
-> - Exemplos de testes realizados.
+### Descompactar um arquivo
 
----
+```bash
+./huffman -d <arquivo.huff> <arquivo_restaurado>
+```
 
-# 📌 Status do Projeto
+**Exemplo:**
 
-🚧 Em desenvolvimento.
-
----
-
-# 📖 Disciplina
-
-**Estrutura de Dados II**  
-:contentReference[oaicite:1]{index=1}
+```bash
+./huffman -d documento.huff documento_restaurado.txt
+```
 
 ---
 
-# 📄 Licença
+## ⚙️ Como Funciona
+
+### Compressão (flag `-c`)
+
+1. **Contagem de frequências** — Lê o arquivo byte a byte e conta quantas vezes cada byte (0–255) aparece
+2. **Fila de prioridade** — Cria uma lista encadeada ordenada por frequência crescente (Min-Heap)
+3. **Árvore de Huffman** — Remove os dois nós de menor frequência, cria um pai com a soma, e reinsere. Repete até sobrar 1 nó (a raiz)
+4. **Geração de códigos** — Percorre a árvore recursivamente: esquerda = `0`, direita = `1`. Ao chegar em uma folha, salva o código na Tabela Hash
+5. **Gravação do `.huff`** — Escreve o cabeçalho (contagem + tabela + bits lixo) e depois codifica o arquivo original bit a bit
+
+### Descompressão (flag `-d`)
+
+1. **Leitura do cabeçalho** — Lê o número de símbolos e a tabela de frequências
+2. **Reconstrução da árvore** — Usa as mesmas frequências para reconstruir a árvore idêntica
+3. **Decodificação** — Lê o payload bit a bit, percorrendo a árvore da raiz até uma folha para recuperar cada byte original
+
+---
+
+## 📊 Resultados de Compactação
+
+| Tipo de Arquivo | Tamanho Original | Tamanho Compactado | Taxa de Compressão |
+|---|---|---|---|
+| Texto pequeno com alta repetição (16 chars) | 17 bytes | 29 bytes | -70,59% (esperado*) |
+| Texto grande (~276 KB) | 276.000 bytes | 153.585 bytes | **44,35%** |
+| Arquivo binário (.exe, ~50 KB) | 50.269 bytes | 36.895 bytes | **26,60%** |
+
+> \* Arquivos muito pequenos ficam maiores após a compressão porque o cabeçalho do `.huff` ocupa mais espaço do que a economia obtida na codificação. Isso é comportamento normal e esperado do algoritmo.
+
+**Em todos os 3 testes, o arquivo restaurado foi verificado como idêntico ao original (sem perda de dados).**
+
+---
+
+## 🧪 Testes Realizados
+
+- ✅ Arquivo de texto pequeno com alta repetição (`AAAAAAABBBBBCCCC`)
+- ✅ Arquivo de texto grande (~276 KB, trecho de Dom Casmurro repetido)
+- ✅ Arquivo binário (executável `.exe`)
+- ✅ Verificação de integridade com `fc /b` (comparação byte a byte)
+
+---
+
+## 📌 Status do Projeto
+
+✅ **Concluído** — Compressor e Descompressor funcionando corretamente.
+
+---
+
+## 📖 Disciplina
+
+**Estrutura de Dados II**
+Universidade Federal do Tocantins (UFT)
+
+---
+
+## 📄 Licença
 
 Projeto acadêmico desenvolvido exclusivamente para fins educacionais.
