@@ -36,10 +36,18 @@ NosTres-ED2-UFT/
 ├── main.c          # Programa principal (CLI + compressor + descompressor)
 ├── MinHeap.c       # Implementação das estruturas de dados
 ├── MinHeap.h       # Definição das structs e protótipos
-├── data/
-│   └── entrada.txt # Arquivo de teste
-├── output/
-│   └── huffman.exe # Executável compilado
+├── data/           # Arquivos de entrada para teste
+│   ├── ABC.txt
+│   ├── Adobe Express - file.png
+│   └── casmurro.txt
+├── output/         # Executável compilado e arquivos gerados nos testes
+│   ├── huffman.exe
+│   ├── ABC.huff
+│   ├── ABC_restored.txt
+│   ├── Adobe Express - file.huff
+│   ├── Adobe Express - file_restored.png
+│   ├── casmurro.huff
+│   └── casmurro_restored.txt
 └── README.md
 ```
 
@@ -120,24 +128,24 @@ gcc main.c MinHeap.c -o output/huffman
 
 ## 📊 Resultados de Compactação
 
-| Tipo de Arquivo | Tamanho Original | Tamanho Compactado | Taxa de Compressão |
-|---|---|---|---|
-| Texto pequeno com alta repetição (16 chars) | 17 bytes | 29 bytes | -70,59% (esperado*) |
-| Texto grande (~276 KB) | 276.000 bytes | 153.585 bytes | **44,35%** |
-| Arquivo binário (.exe, ~50 KB) | 50.269 bytes | 36.895 bytes | **26,60%** |
+| Arquivo | Tipo de Conteúdo | Tamanho Original | Tamanho Compactado | Taxa de Compressão |
+|---|---|---|---|---|
+| `ABC.txt` | Texto curto e repetitivo | 16 bytes | 24 bytes | -50,00% (esperado*) |
+| `casmurro.txt` | Texto longo literário (Dom Casmurro) | 392.026 bytes | 226.690 bytes | **42,17%** |
+| `Adobe Express - file.png` | Imagem binária pré-comprimida | 623.497 bytes | 624.782 bytes | -0,21% (esperado*) |
 
-> \* Arquivos muito pequenos ficam maiores após a compressão porque o cabeçalho do `.huff` ocupa mais espaço do que a economia obtida na codificação. Isso é comportamento normal e esperado do algoritmo.
+> \* **Nota sobre taxas negativas**: Arquivos extremamente pequenos (como `ABC.txt`) ou já previamente compactados (como imagens `.png`) podem apresentar um leve aumento no tamanho final. Isso ocorre porque o cabeçalho do formato `.huff` (que carrega as frequências dos símbolos necessárias para a descompressão) ocupa um espaço fixo que anula ou supera o ganho de bits na codificação. Este comportamento é previsto e normal para o algoritmo de Huffman estático.
 
-**Em todos os 3 testes, o arquivo restaurado foi verificado como idêntico ao original (sem perda de dados).**
+**Em todos os 3 testes, a integridade dos arquivos originais e restaurados foi de 100% (sem perda de dados).**
 
 ---
 
 ## 🧪 Testes Realizados
 
-- ✅ Arquivo de texto pequeno com alta repetição (`AAAAAAABBBBBCCCC`)
-- ✅ Arquivo de texto grande (~276 KB, trecho de Dom Casmurro repetido)
-- ✅ Arquivo binário (executável `.exe`)
-- ✅ Verificação de integridade com `fc /b` (comparação byte a byte)
+- ✅ **Texto curto e repetitivo** (`data/ABC.txt`)
+- ✅ **Texto longo literário** (`data/casmurro.txt` - obra completa Dom Casmurro)
+- ✅ **Arquivo de imagem binária pré-comprimida** (`data/Adobe Express - file.png`)
+- ✅ **Verificação de integridade byte a byte** usando `fc /b` para todos os arquivos, comprovando 100% de precisão na restauração.
 
 ---
 
